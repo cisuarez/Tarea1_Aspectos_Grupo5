@@ -19,18 +19,21 @@ public class Main {
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().setBackground(Color.RED);
+                notifySizeChange(new Dimension(400, 300));
             }
         });
 
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().setBackground(Color.GREEN);
+                notifySizeChange(new Dimension(200, 150));
             }
         });
 
         button3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().setBackground(Color.BLUE);
+                notifySizeChange(new Dimension(500, 400));
             }
         });
 
@@ -39,5 +42,9 @@ public class Main {
         frame.add(button3);
 
         frame.setVisible(true);
+    }
+
+    private static void notifySizeChange(Dimension size) {
+        ResizeWindowAspect.aspectOf().notifySizeChange(size);
     }
 }
