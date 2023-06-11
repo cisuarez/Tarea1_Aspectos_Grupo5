@@ -1,46 +1,37 @@
 package main;
 
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 public aspect ColorChangeObserver {
-    private ColorChangeObservable observable;
+    private List<ColorChangeListener> observers = new ArrayList<>();
+    private Color currentColor;
 
-    pointcut buttonClick(): execution(void javax.swing.AbstractButton.addActionListener(ActionListener+)) && target(button) && args(listener);
+    pointcut frameInit(JComponent frame): execution(javax.swing.JFrame+.new(..)) && target(frame);
 
-    after(Object newValue): buttonClick() && if(observable != null) && newValue != null {
-        observable.notifyColorChange(newValue.toString());
+    after(JComponent frame): frameInit(frame) {
+        addObserver(new ColorChangeConsoleObserver());
     }
 
-    pointcut frameInit(): execution(javax.swing.JFrame+.new()) && this(frame);
+    pointcut buttonClick(AbstractButton button): execution(void AbstractButton.addActionListener(ActionListener)) && target(button);
 
-    after(): frameInit() {
-        observable = new ColorChangeObservable();
-        observable.addObserver(new ColorChangeConsoleObserver());
-    }
-}
-
-class ColorChangeObservable {
-    private List<ColorChangeObserver> observers;
-
-    public ColorChangeObservable() {
-        observers = new ArrayList<>();
+    after(AbstractButton button, ActionEvent event): buttonClick(button) && args(listener) && this(event) {
+        if (event.getSource() instanceof Color) {
+            currentColor = (Color) event.getSource();
+            notifyObservers();
+        }
     }
 
-    public void addObserver(ColorChangeObserver observer) {
+    private void addObserver(ColorChangeListener observer) {
         observers.add(observer);
     }
 
-    public void notifyColorChange(String color) {
-        for (ColorChangeObserver observer : observers) {
-            observer.update(color);
+    private void notifyObservers() {
+        for (ColorChangeListener observer : observers) {
+            observer.updateColor(currentColor);
         }
-    }
-}
-
-interface ColorChangeObserver {
-    void update(String color);
-}
-
-class ColorChangeConsoleObserver implements ColorChangeObserver {
-    public void update(String color) {
-        System.out.println("Nuevo color de fondo: " + color);
     }
 }

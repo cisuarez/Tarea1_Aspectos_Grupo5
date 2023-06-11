@@ -13,20 +13,21 @@ public class Main {
         frame.setLayout(new FlowLayout());
 
         JButton button1 = new JButton("Botón 1");
+        JButton button2 = new JButton("Botón 2");
+        JButton button3 = new JButton("Botón 3");
+
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().setBackground(Color.RED);
             }
         });
 
-        JButton button2 = new JButton("Botón 2");
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().setBackground(Color.GREEN);
             }
         });
 
-        JButton button3 = new JButton("Botón 3");
         button3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().setBackground(Color.BLUE);
